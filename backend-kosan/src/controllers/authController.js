@@ -1,4 +1,5 @@
 const supabase = require('../config/supabase');
+const jwt = require('jsonwebtoken');
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -11,39 +12,44 @@ const login = async (req, res) => {
             .single();
 
         if (error || !data) {
-            return res.status(401).json({ status: 'error', message: 'Email tidak ditemukan!' });
+            return res.status(401).json({ status: 'error', message: 'Email atau password salah!' });
         }
 
-        if (data.password !== password) {
-            return res.status(401).json({ status: 'error', message: 'Password salah!' });
+        if (password !== data.password) {
+            return res.status(401).json({ status: 'error', message: 'Email atau password salah!' });
         }
 
-        res.status(200).json({ status: 'success', message: 'Login berhasil', user: data });
+        const roleNormalized = (data.role || '').toLowerCase();
+        const token = jwt.sign(
+            { id: data.id, email: data.email, role: roleNormalized },
+            process.env.JWT_SECRET || 'kaskos-secret-key-default-2026',
+            { expiresIn: '7d' }
+        );
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Login berhasil!',
+            token,
+            user: {
+                id: data.id,
+                nama_lengkap: data.nama_lengkap,
+                email: data.email,
+                role: data.role,
+                role_normalized: roleNormalized
+            }
+        });
+
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        res.status(500).json({ status: 'error', message: 'Terjadi kesalahan server', error: err.message });
     }
 };
 
 const register = async (req, res) => {
-    const { nama_lengkap, email, password, no_telepon, role } = req.body;
-
-    try {
-        const { data: existingUser } = await supabase.from('users').select('email').eq('email', email).single();
-        if (existingUser) {
-            return res.status(400).json({ status: 'error', message: 'Email sudah digunakan!' });
-        }
-
-        const { data, error } = await supabase
-            .from('users')
-            .insert([{ nama_lengkap, email, password, no_telepon, role }])
-            .select();
-
-        if (error) throw error;
-
-        res.status(201).json({ status: 'success', message: 'Registrasi berhasil', user: data[0] });
-    } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
-    }
+    // Registrasi publik dinonaktifkan untuk mencegah pembuatan akun pengelola/penghuni ilegal
+    return res.status(403).json({
+        status: 'error',
+        message: 'Registrasi publik dinonaktifkan demi keamanan sistem. Akun penghuni hanya dapat didaftarkan oleh Pengelola Kos melalui menu Data Penghuni.'
+    });
 };
 
 module.exports = { login, register };

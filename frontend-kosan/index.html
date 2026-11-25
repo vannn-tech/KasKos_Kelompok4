@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>Masuk - KasKos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+    <main class="auth-wrapper">
+        <div class="auth-card">
+            <div class="brand">
+                <span class="brand-mark"><i data-icon="home"></i></span>
+                KasKos
+            </div>
+            <p class="auth-sub">Silakan masuk ke akun Anda</p>
+
+            <div id="alertBox" class="alert" role="alert"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="nama@email.com" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Masukkan password" autocomplete="current-password" required>
+                </div>
+                <button type="submit" class="btn-primary btn-block">Masuk</button>
+            </form>
+
+            <p class="auth-note">
+                Akun penghuni didaftarkan langsung oleh Pengelola Kos.<br>
+                Hubungi pengelola jika Anda belum memiliki akses.
+            </p>
+        </div>
+    </main>
+
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

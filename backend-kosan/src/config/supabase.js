@@ -4,9 +4,9 @@ require('dotenv').config();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-    console.error('⚠️ PERINGATAN: SUPABASE_URL atau SUPABASE_KEY belum diatur di file .env!');
-}
+// Cek apakah variabel .env terbaca
+console.log("Cek URL .env:", supabaseUrl ? "Terbaca" : "KOSONG/TIDAK TERBACA");
+console.log("Cek Key .env:", supabaseKey ? "Terbaca" : "KOSONG/TIDAK TERBACA");
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
